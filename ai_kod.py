@@ -1,7 +1,8 @@
 import streamlit as st
 from sklearn.tree import DecisionTreeClassifier
+import pandas as pd
 
-st.title("🛡️ AI İntellektual Xəta Diaqnozu")
+st.title("🛡️ AI İntellektual Xəta Diaqnozu Pro")
 
 # Məlumat bazası
 X_data = [[10, 80], [12, 443], [5, 21], [500, 0], [550, 0], [600, 12], [404, 80], [503, 8080]]
@@ -18,14 +19,21 @@ port = st.sidebar.number_input("Port:", value=80)
 if st.sidebar.button("Analiz et"):
     texmin = model.predict([[xata_kodu, port]])
     
+    # Nəticəni göstər
     st.subheader("Diaqnoz Nəticəsi:")
-    
     if texmin[0] == 0:
         st.error("Nəticə: ŞƏBƏKƏ XƏTASI")
-        st.write("Məsləhət: Router-i yoxlayın, internet kabelini çıxarıb taxın.")
+        st.write("Məsləhət: Router-i yoxlayın.")
     elif texmin[0] == 1:
         st.warning("Nəticə: SİSTEM XƏTASI")
-        st.write("Məsləhət: Kompüteri yenidən başladın və RAM yaddaşını yoxlayın.")
+        st.write("Məsləhət: RAM və prosessoru yoxlayın.")
     else:
-        st.info("Nəticə: GİRİŞ/İCAZƏ XƏTASI")
-        st.write("Məsləhət: Şifrənizi yoxlayın və ya administratorla əlaqə saxlayın.")
+        st.info("Nəticə: GİRİŞ XƏTASI")
+        st.write("Məsləhət: Şifrəni yoxlayın.")
+    
+    # Yeni funksiya: Məlumatları qrafikdə göstərək
+    st.write("---")
+    st.write("### Məlumat Bazamızın Paylanması")
+    df = pd.DataFrame(X_data, columns=['Xəta Kodu', 'Port'])
+    st.bar_chart(df)
+    st.write("Bu qrafik sistemin öyrəndiyi xəta kodlarının və portların paylanmasını göstərir.")
