@@ -1,38 +1,17 @@
+import os
 import streamlit as st
 import google.generativeai as genai
 
-st.title("🤖 Hər şeyi Bilən İT Köməkçisi")
+# Açarını əlavə et
+api_key = st.secrets["GEMINI_API_KEY"]
 
-# Konfiqurasiya
+# Əgər AQ. ilə başlayırsa, biz bunu 'genai' kitabxanası ilə yox, 
+# birbaşa HTTP sorğusu ilə və ya 'google-auth' ilə etməliyik.
+# Amma əvvəlcə bunu yoxla:
 try:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    
-    # Ən stabil modeli seçirik (daha dəqiq adla)
+    genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-1.5-flash')
+    response = model.generate_content("Salam")
+    st.write(response.text)
 except Exception as e:
-    st.error(f"Xəta: {e}")
-    st.stop()
-
-# Söhbət funksiyası
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-if prompt := st.chat_input("İT sualını yaz..."):
-    st.chat_message("user").markdown(prompt)
-    st.session_state.messages.append({"role": "user", "content": prompt})
-
-    try:
-        # Sualı göndəririk
-        response = model.generate_content(prompt)
-        cavab = response.text
-    except Exception as e:
-        # Əgər 404 xətası alsaq, bura düşəcək
-        cavab = f"Model xətası: {e}. Zəhmət olmasa API açarınızın Google AI Studio-da 'Gemini API' üçün aktiv olduğundan əmin olun."
-    
-    with st.chat_message("assistant"):
-        st.markdown(cavab)
-    st.session_state.messages.append({"role": "assistant", "content": cavab})
+    st.error(f"Xəta baş verdi: {e}")
