@@ -3,34 +3,35 @@ import google.generativeai as genai
 
 st.title("🤖 Hər şeyi Bilən İT Köməkçisi")
 
-# 1. API Açarını quraşdırırıq
-# QEYD: API açarını Streamlit-in "Secrets" bölməsinə əlavə etməlisən
+# Secrets-dən açarı təhlükəsiz şəkildə oxuyuruq
+# Əgər API açarı Secrets-də düzgün qeyd olunubsa, proqram işləyəcək
 try:
-    api_key = st.secrets["GEMINI_API_KEY"]
-    genai.configure(api_key=api_key)
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
     model = genai.GenerativeModel('gemini-pro')
-except:
-    st.error("API açarı tapılmadı! Lütfən Streamlit Secrets-ə GEMINI_API_KEY əlavə edin.")
+except Exception as e:
+    st.error("API açarı tapılmadı! Zəhmət olmasa Streamlit 'Secrets' bölməsinə GEMINI_API_KEY = 'açarın' formatında əlavə edin.")
+    st.stop()
 
-# 2. Söhbət tarixçəsini saxlayaq
+# Söhbət tarixçəsini saxlayaq
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# Əvvəlki mesajları göstərək
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 3. İstifadəçidən sual alaq
-if prompt := st.chat_input("İT və ya proqramlaşdırma ilə bağlı sualını yaz..."):
+# İstifadəçidən sual alaq
+if prompt := st.chat_input("İT sualını yaz..."):
     st.chat_message("user").markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-    # AI-yə sualı göndər
+    # AI-yə sualı göndərək
     try:
         response = model.generate_content(f"Sən bir İT mütəxəssisisən. Bu suala ətraflı cavab ver: {prompt}")
         cavab = response.text
     except Exception as e:
-        cavab = "Bağışlayın, hazırda cavab verə bilmirəm. API açarını yoxlayın."
+        cavab = "Üzr istəyirəm, texniki xəta baş verdi."
     
     with st.chat_message("assistant"):
         st.markdown(cavab)
