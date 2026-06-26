@@ -1,6 +1,6 @@
 import streamlit as st
 
-# Məlumat bazası (Bütün köhnə və yeni məlumatlar buradadır)
+# Bütün toplanmış məlumat bazası
 it_bazasi = {
     # Web Xətaları
     "400": {"izah": "Bad Request (Yanlış sorğu).", "meslehet": ["URL-i yoxla", "Parametrləri düzəlt"]},
@@ -33,10 +33,18 @@ it_bazasi = {
     "FTP": {"izah": "Fayl ötürmə xətası.", "meslehet": ["Passiv rejimi yoxla", "Portu yoxla"]},
     "Firewall": {"izah": "Şəbəkə qoruma divarı.", "meslehet": ["Portun açıq olmasını yoxla"]},
     "BlueScreen": {"izah": "Windows sistem çökməsi.", "meslehet": ["RAM-ı yoxla", "Driverləri yenilə"]},
-    "AccessDenied": {"izah": "Giriş qadağandır.", "meslehet": ["Administrator kimi aç"]}
+    "AccessDenied": {"izah": "Giriş qadağandır.", "meslehet": ["Administrator kimi aç"]},
+    
+    # Əlavə Texniki Terminlər
+    "API": {"izah": "İnterfeys xətası.", "meslehet": ["Endpoint-i yoxla", "Token-i yenilə"]},
+    "Git": {"izah": "Versiya idarəetmə xətası.", "meslehet": ["Merge konfliktini həll et"]},
+    "Docker": {"izah": "Konteyner işə düşmür.", "meslehet": ["Docker loglarına bax"]},
+    "MySQL": {"izah": "Baza qoşulma xətası.", "meslehet": ["Host adını yoxla"]},
+    "Ping": {"izah": "Bağlantı yoxlanışı.", "meslehet": ["Serverin IP ünvanını yoxla"]},
+    "Cache": {"izah": "Köhnə məlumat saxlanması.", "meslehet": ["Brauzer cache-ini təmizlə"]}
 }
 
-st.set_page_config(page_title="IT Bilik Bazası", page_icon="💻")
+st.set_page_config(page_title="Professional IT Bilik Bazası", page_icon="💻")
 st.title("💻 Professional IT Bilik Bazası")
 
 axtaris = st.text_input("Axtarış (Xəta kodu və ya açar söz):").strip().lower()
@@ -44,6 +52,7 @@ axtaris = st.text_input("Axtarış (Xəta kodu və ya açar söz):").strip().low
 if axtaris:
     tapildi = False
     for kod, melumat in it_bazasi.items():
+        # Həm kodun adını, həm də izahını yoxlayır
         if axtaris in kod.lower() or axtaris in melumat['izah'].lower():
             st.subheader(f"✅ Tapıldı: {kod}")
             st.info(f"İzahı: {melumat['izah']}")
@@ -51,10 +60,13 @@ if axtaris:
             for m in melumat['meslehet']:
                 st.success(m)
             tapildi = True
-            
+    
     if not tapildi:
-        st.warning("Bu açar söz üzrə məlumat tapılmadı.")
+        st.error("Bu xəta bazada yoxdur. Zəhmət olmasa siyahını yoxlayın.")
 
 st.write("---")
-with st.expander("📂 Bazadakı bütün kodların siyahısı:"):
+with st.expander("📂 Bütün xəta kodları siyahısı:"):
     st.write(list(it_bazasi.keys()))
+
+st.write("---")
+st.write("### Problemin diaqnostika prosesi:")
