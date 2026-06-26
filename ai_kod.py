@@ -1,39 +1,44 @@
 import streamlit as st
 
-# Genişləndirilmiş IT və Python Məlumat Bazası
+# Çox genişləndirilmiş IT Məlumat Bazası
 it_bazasi = {
-    # Web Xətaları
+    # Python
+    "SyntaxError": {"izah": "Yazılış qaydası səhvi.", "meslehet": ["Mötərizəni yoxla", "İki nöqtəni qoy", "Dırnaqları bağla"]},
+    "NameError": {"izah": "Dəyişən adı tanınmır.", "meslehet": ["Dəyişəni əvvəl təyin et", "Adı düz yaz"]},
+    "TypeError": {"izah": "Tip uyğunsuzluğu.", "meslehet": ["Str və Int-i birləşdirmə", "Düzgün tip istifadə et"]},
+    
+    # Şəbəkə
+    "DNS": {"izah": "Ad həlli xətası.", "meslehet": ["İnterneti yoxla", "DNS 8.8.8.8 et", "Modemi restart et"]},
     "404": {"izah": "Səhifə tapılmadı.", "meslehet": ["URL-i yoxla", "Səhifə silinib ola bilər"]},
-    "500": {"izah": "Server daxili xətası.", "meslehet": ["Server loglarını yoxla", "Kodu nəzərdən keçir"]},
+    "500": {"izah": "Server daxili xətası.", "meslehet": ["Server loglarına bax", "Kodu debug et"]},
     
-    # Python Proqramlaşdırma Xətaları
-    "SyntaxError": {"izah": "Sintaksis xətası (yazılış qaydası).", "meslehet": ["Mötərizələri yoxla", "Dırnaq işarələrini bağla", "İki nöqtə (:) qoyulubmu?"]},
-    "NameError": {"izah": "Dəyişən adı tapılmadı.", "meslehet": ["Dəyişənin adını düz yazmısan?", "Dəyişəni öncədən təyin etmisən?"]},
-    "TypeError": {"izah": "Tip uyğunsuzluğu.", "meslehet": ["Rəqəmlə mətni toplayırsan?", "Funksiyaya düzgün tip göndər"]},
-    "IndexError": {"izah": "Siyahı indeksi xətası.", "meslehet": ["Siyahının ölçüsündən böyük indeks istifadə etmə"]},
+    # SQL (Verilənlər Bazası)
+    "SQL-1064": {"izah": "SQL sintaksis xətası.", "meslehet": ["Sorğunu yoxla", "Dırnaqlara diqqət et"]},
+    "ConnectionError": {"izah": "Bazaya qoşula bilmir.", "meslehet": ["Host adını yoxla", "Şifrəni yoxla"]},
     
-    # Sistem və Şəbəkə
-    "DNS": {"izah": "DNS xətası.", "meslehet": ["İnterneti yoxla", "DNS ünvanlarını yenilə (8.8.8.8)"]},
-    "RAM": {"izah": "Yaddaş tükəndi.", "meslehet": ["Proqramları bağla", "Restart et"]},
-    "Port 80": {"izah": "HTTP portu məşğuldur.", "meslehet": ["Başqa web serveri söndür"]}
+    # Windows/Sistem
+    "BlueScreen": {"izah": "Sistem çökməsi.", "meslehet": ["RAM-ı yoxla", "Driverləri yenilə"]},
+    "AccessDenied": {"izah": "İcazə yoxdur.", "meslehet": ["Administrator kimi aç", "Fayl icazələrini yoxla"]}
 }
 
-st.set_page_config(page_title="IT & Python Məsləhətçi", page_icon="💻")
-st.title("💻 IT & Python Məsləhətçi")
+st.set_page_config(page_title="IT Ensklopediyası", page_icon="📚")
+st.title("📚 IT Mütəxəssis Aləti")
 
-axtaris = st.text_input("Xəta kodunu və ya xəta adını yazın (məs: 404, SyntaxError, DNS):").strip()
+# Axtarış
+axtaris = st.text_input("Axtarış (məs: SyntaxError, DNS, BlueScreen):").strip()
 
 if axtaris:
     if axtaris in it_bazasi:
         data = it_bazasi[axtaris]
-        st.subheader(f"🔍 İzahı: {data['izah']}")
+        st.subheader(f"İzahı: {data['izah']}")
         st.subheader("💡 Məsləhətlər:")
         for m in data['meslehet']:
             st.success(m)
     else:
-        st.warning(f"'{axtaris}' haqqında hələ ki, məlumat yoxdur. Bazanı genişləndirmək üçün mənə bildir!")
+        st.error(f"'{axtaris}' bazada yoxdur. Zəhmət olmasa siyahını yoxlayın.")
 
-# Vizual dəstək
+# Vizual köməkçi (Axtarış prosesini anlamaq üçün)
 st.write("---")
-st.write("### Problemin diaqnozu üçün sistem sxemi:")
-#
+st.write("### IT Problemlərinin Həlli Addımları:")
+
+st.write("1. Xətanı müəyyən et. 2. Bazadan axtar. 3. Məsləhəti tətbiq et.")
