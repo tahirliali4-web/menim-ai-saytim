@@ -1,44 +1,45 @@
 import streamlit as st
 
-# Çox genişləndirilmiş IT Məlumat Bazası
+# Tam və geniş IT Ensklopediyası
 it_bazasi = {
-    # Python
-    "SyntaxError": {"izah": "Yazılış qaydası səhvi.", "meslehet": ["Mötərizəni yoxla", "İki nöqtəni qoy", "Dırnaqları bağla"]},
-    "NameError": {"izah": "Dəyişən adı tanınmır.", "meslehet": ["Dəyişəni əvvəl təyin et", "Adı düz yaz"]},
-    "TypeError": {"izah": "Tip uyğunsuzluğu.", "meslehet": ["Str və Int-i birləşdirmə", "Düzgün tip istifadə et"]},
+    # 4xx Xətaları (Müştəri səhvi)
+    "400": {"izah": "Bad Request (Yanlış sorğu).", "meslehet": ["URL-i yoxla", "Parametrləri düzəlt"]},
+    "401": {"izah": "Unauthorized (Giriş icazəsi yoxdur).", "meslehet": ["Düzgün login/şifrə daxil et"]},
+    "403": {"izah": "Forbidden (Giriş qadağandır).", "meslehet": ["İcazələri yoxla", "Adminlə əlaqə saxla"]},
+    "404": {"izah": "Not Found (Səhifə tapılmadı).", "meslehet": ["URL-i diqqətlə yoxla", "Saytın ana səhifəsinə qayıt"]},
+    "408": {"izah": "Request Timeout (Sorğu vaxtı bitdi).", "meslehet": ["İnterneti yoxla", "Səhifəni yenilə"]},
     
-    # Şəbəkə
-    "DNS": {"izah": "Ad həlli xətası.", "meslehet": ["İnterneti yoxla", "DNS 8.8.8.8 et", "Modemi restart et"]},
-    "404": {"izah": "Səhifə tapılmadı.", "meslehet": ["URL-i yoxla", "Səhifə silinib ola bilər"]},
-    "500": {"izah": "Server daxili xətası.", "meslehet": ["Server loglarına bax", "Kodu debug et"]},
+    # 5xx Xətaları (Server səhvi)
+    "500": {"izah": "Internal Server Error (Server xətası).", "meslehet": ["Serveri yenilə", "Log fayllarına bax"]},
+    "502": {"izah": "Bad Gateway (Keçid xətası).", "meslehet": ["Serverin cavab verməsini gözlə", "Gateway-i yoxla"]},
+    "503": {"izah": "Service Unavailable (Xidmət hazır deyil).", "meslehet": ["Serverin həddən artıq yüklənməsini yoxla", "Bir az sonra yoxla"]},
+    "504": {"izah": "Gateway Timeout (Keçid vaxtı bitdi).", "meslehet": ["Serverin cavab verməsini gözlə", "DNS parametrlərini yoxla"]},
     
-    # SQL (Verilənlər Bazası)
-    "SQL-1064": {"izah": "SQL sintaksis xətası.", "meslehet": ["Sorğunu yoxla", "Dırnaqlara diqqət et"]},
-    "ConnectionError": {"izah": "Bazaya qoşula bilmir.", "meslehet": ["Host adını yoxla", "Şifrəni yoxla"]},
-    
-    # Windows/Sistem
-    "BlueScreen": {"izah": "Sistem çökməsi.", "meslehet": ["RAM-ı yoxla", "Driverləri yenilə"]},
-    "AccessDenied": {"izah": "İcazə yoxdur.", "meslehet": ["Administrator kimi aç", "Fayl icazələrini yoxla"]}
+    # Digər Texniki Xətalar
+    "DNS": {"izah": "Ad həlli xətası.", "meslehet": ["DNS parametrlərini 8.8.8.8 et", "İnternet bağlantısını yoxla"]},
+    "SyntaxError": {"izah": "Proqramlaşdırma sintaksis xətası.", "meslehet": ["Mötərizələri yoxla", "Yazılışı düzəlt"]},
+    "BlueScreen": {"izah": "Windows sistem çökməsi.", "meslehet": ["RAM-ı yoxla", "Sürücüləri (driver) yenilə"]}
 }
 
-st.set_page_config(page_title="IT Ensklopediyası", page_icon="📚")
-st.title("📚 IT Mütəxəssis Aləti")
+st.set_page_config(page_title="IT Ensklopediyası", page_icon="🌐")
+st.title("🌐 IT Bütün Xətalar Mərkəzi")
 
-# Axtarış
-axtaris = st.text_input("Axtarış (məs: SyntaxError, DNS, BlueScreen):").strip()
+# Axtarış hissəsi
+axtaris = st.text_input("Xəta kodunu və ya xəta adını yazın (məs: 404, 500, DNS, SyntaxError):").strip()
 
 if axtaris:
     if axtaris in it_bazasi:
         data = it_bazasi[axtaris]
-        st.subheader(f"İzahı: {data['izah']}")
+        st.subheader(f"🔍 İzahı: {data['izah']}")
         st.subheader("💡 Məsləhətlər:")
         for m in data['meslehet']:
             st.success(m)
     else:
-        st.error(f"'{axtaris}' bazada yoxdur. Zəhmət olmasa siyahını yoxlayın.")
+        st.error(f"'{axtaris}' bazada tapılmadı. Zəhmət olmasa düzgün kod yazdığınızdan əmin olun.")
 
-# Vizual köməkçi (Axtarış prosesini anlamaq üçün)
+# Baza siyahısı (İstifadəçi baxa bilsin)
+with st.expander("Bazada olan bütün xəta kodları:"):
+    st.write(list(it_bazasi.keys()))
+
 st.write("---")
-st.write("### IT Problemlərinin Həlli Addımları:")
-
-st.write("1. Xətanı müəyyən et. 2. Bazadan axtar. 3. Məsləhəti tətbiq et.")
+st.write("### Problemin diaqnostika prosesi:")
