@@ -1,41 +1,39 @@
 import streamlit as st
 
-# Tam IT Məlumat Bazası
+# Genişləndirilmiş IT və Python Məlumat Bazası
 it_bazasi = {
     # Web Xətaları
-    "400": {"izah": "Bad Request (Səhv sorğu).", "meslehet": ["URL-i yoxla", "Sorğu formatını düzəlt"]},
-    "401": {"izah": "Unauthorized (İcazəsiz giriş).", "meslehet": ["Şifrəni yoxla", "Login ol"]},
-    "403": {"izah": "Forbidden (Giriş qadağandır).", "meslehet": ["İcazələri yoxla", "Adminlə əlaqə saxla"]},
-    "404": {"izah": "Not Found (Səhifə tapılmadı).", "meslehet": ["URL-i yoxla", "Səhifənin mövcudluğunu yoxla"]},
-    "500": {"izah": "Internal Server Error (Server xətası).", "meslehet": ["Serveri yenilə", "Loglara bax"]},
-    "502": {"izah": "Bad Gateway (Keçid xətası).", "meslehet": ["Bir az gözlə", "Serveri restart et"]},
-    "503": {"izah": "Service Unavailable (Xidmət yoxdur).", "meslehet": ["Serverin yüklənməsini yoxla"]},
+    "404": {"izah": "Səhifə tapılmadı.", "meslehet": ["URL-i yoxla", "Səhifə silinib ola bilər"]},
+    "500": {"izah": "Server daxili xətası.", "meslehet": ["Server loglarını yoxla", "Kodu nəzərdən keçir"]},
     
-    # Şəbəkə və Portlar
-    "DNS": {"izah": "DNS xətası (Ad həlli mümkün olmadı).", "meslehet": ["İnterneti yoxla", "DNS-i 8.8.8.8 et"]},
-    "Port 21": {"izah": "FTP (Fayl köçürmə).", "meslehet": ["Portun açıq olmasını yoxla", "İstifadəçi adını yoxla"]},
-    "Port 22": {"izah": "SSH (Uzaqdan idarə).", "meslehet": ["Firewall-u yoxla", "Serverin açıq olduğundan əmin ol"]},
-    "Port 3306": {"izah": "MySQL (Verilənlər bazası).", "meslehet": ["Bazanın işlədiyini yoxla", "Host adını yoxla"]},
+    # Python Proqramlaşdırma Xətaları
+    "SyntaxError": {"izah": "Sintaksis xətası (yazılış qaydası).", "meslehet": ["Mötərizələri yoxla", "Dırnaq işarələrini bağla", "İki nöqtə (:) qoyulubmu?"]},
+    "NameError": {"izah": "Dəyişən adı tapılmadı.", "meslehet": ["Dəyişənin adını düz yazmısan?", "Dəyişəni öncədən təyin etmisən?"]},
+    "TypeError": {"izah": "Tip uyğunsuzluğu.", "meslehet": ["Rəqəmlə mətni toplayırsan?", "Funksiyaya düzgün tip göndər"]},
+    "IndexError": {"izah": "Siyahı indeksi xətası.", "meslehet": ["Siyahının ölçüsündən böyük indeks istifadə etmə"]},
     
-    # Sistem Xətaları
-    "RAM": {"izah": "Yaddaş çatışmazlığı.", "meslehet": ["Lazımsız proqramları bağla", "RAM-ı yoxla"]},
-    "CPU": {"izah": "Prosessorun həddindən artıq yüklənməsi.", "meslehet": ["Arxa plan proseslərinə bax", "Sistemə restart ver"]}
+    # Sistem və Şəbəkə
+    "DNS": {"izah": "DNS xətası.", "meslehet": ["İnterneti yoxla", "DNS ünvanlarını yenilə (8.8.8.8)"]},
+    "RAM": {"izah": "Yaddaş tükəndi.", "meslehet": ["Proqramları bağla", "Restart et"]},
+    "Port 80": {"izah": "HTTP portu məşğuldur.", "meslehet": ["Başqa web serveri söndür"]}
 }
 
-st.set_page_config(page_title="IT Bütün Xətalar Mərkəzi", page_icon="🌐")
-st.title("🌐 IT Bütün Xətalar Mərkəzi")
+st.set_page_config(page_title="IT & Python Məsləhətçi", page_icon="💻")
+st.title("💻 IT & Python Məsləhətçi")
 
-axtaris = st.text_input("Xəta kodunu və ya mövzunu yazın (məs: 403, DNS, RAM):").strip()
+axtaris = st.text_input("Xəta kodunu və ya xəta adını yazın (məs: 404, SyntaxError, DNS):").strip()
 
 if axtaris:
     if axtaris in it_bazasi:
         data = it_bazasi[axtaris]
-        st.subheader(f"İzahı: {data['izah']}")
-        st.subheader("💡 Həll yolları:")
+        st.subheader(f"🔍 İzahı: {data['izah']}")
+        st.subheader("💡 Məsləhətlər:")
         for m in data['meslehet']:
             st.success(m)
     else:
-        st.error(f"'{axtaris}' bazada tapılmadı. Zəhmət olmasa siyahıdan birini yoxlayın.")
+        st.warning(f"'{axtaris}' haqqında hələ ki, məlumat yoxdur. Bazanı genişləndirmək üçün mənə bildir!")
 
-with st.expander("Bazada olan bütün kodlar:"):
-    st.write(list(it_bazasi.keys()))
+# Vizual dəstək
+st.write("---")
+st.write("### Problemin diaqnozu üçün sistem sxemi:")
+#
