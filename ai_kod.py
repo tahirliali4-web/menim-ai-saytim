@@ -1,6 +1,6 @@
 import streamlit as st
 
-# MƏLUMAT BAZASI: İLKİN 350+ MADDƏ
+# MƏLUMAT BAZASI (Sizin baza olduğu kimi qalır)
 it_bazasi = {
     "400": {"izah": "Bad Request", "meslehet": ["URL-i yoxla", "Parametrləri düzəlt"]},
     "401": {"izah": "Unauthorized", "meslehet": ["Giriş edin", "Token-i yoxla"]},
@@ -115,28 +115,17 @@ it_bazasi = {
     "Memory-Exhausted": {"izah": "RAM tükənib", "meslehet": ["əlavə RAM al və ya prosesi öldür"]}
 }
 
-# 1. 500 MADDƏ
+# Dövrələr (100.000+ maddə)
 for i in range(1, 501):
-    it_bazasi[f"TECH-{i:03}"] = {
-        "izah": f"Texniki sistem xətası nömrə {i}",
-        "meslehet": ["Log fayllarını yoxlayın", "Sistem admini ilə əlaqə saxlayın", "Backup-ı nəzərdən keçirin"]
-    }
+    it_bazasi[f"TECH-{i:03}"] = {"izah": f"Texniki sistem xətası nömrə {i}", "meslehet": ["Log yoxla", "Adminlə əlaqə", "Backup-ı yoxla"]}
+    it_bazasi[f"NET-{i:03}"] = {"izah": f"Şəbəkə xətası nömrə {i}", "meslehet": ["Kabeli yoxla", "Routeri restart et", "Ping at"]}
 
-# 2. 500 MADDƏ
-for i in range(1, 501):
-    it_bazasi[f"NET-{i:03}"] = {
-        "izah": f"Şəbəkə xətası nömrə {i}",
-        "meslehet": ["Kabel bağlantılarını yoxlayın", "Router-i restart edin", "Ping ataraq əlaqəni sınayın"]
-    }
-
-# 3. YENİ 4000 MADDƏNİN ƏLAVƏ EDİLMƏSİ
 for i in range(1, 1001):
-    it_bazasi[f"SRV-{i:04}"] = {"izah": f"Server infrastrukturu xətası {i}", "meslehet": ["Service statusu yoxla", "Restart et"]}
-    it_bazasi[f"DB-{i:04}"] = {"izah": f"Verilənlər bazası xətası {i}", "meslehet": ["Query optimizasiyası et", "Indeks yoxla"]}
+    it_bazasi[f"SRV-{i:04}"] = {"izah": f"Server infrastrukturu xətası {i}", "meslehet": ["Statusu yoxla", "Restart et"]}
+    it_bazasi[f"DB-{i:04}"] = {"izah": f"Verilənlər bazası xətası {i}", "meslehet": ["Query optimizasiyası et", "İndeks yoxla"]}
     it_bazasi[f"SEC-{i:04}"] = {"izah": f"Təhlükəsizlik xəbərdarlığı {i}", "meslehet": ["İcazələri audit et", "Firewall yoxla"]}
     it_bazasi[f"APP-{i:04}"] = {"izah": f"Tətbiq xətası {i}", "meslehet": ["Debug loglarını oxu", "Kod xətası yoxla"]}
 
-# 4. ƏLAVƏ 100.000 YENİ MADDƏ
 for i in range(1, 25001):
     it_bazasi[f"GEN-A-{i:05}"] = {"izah": f"Ümumi xəta A-{i}", "meslehet": ["Log yoxla", "Təkrar yoxla"]}
     it_bazasi[f"GEN-B-{i:05}"] = {"izah": f"Ümumi xəta B-{i}", "meslehet": ["Parametrləri yoxla"]}
@@ -148,21 +137,30 @@ st.title(f"💻 Professional IT Bilik Bazası ({len(it_bazasi)} maddə)")
 
 axtaris = st.text_input("Axtarış üçün xəta kodu və ya açar söz yazın:").strip().lower()
 
+# YENİ SƏLİQƏLİ DİZAYNLI AXTARIŞ BLOKU
 if axtaris:
     tapildi = False
     count = 0
-    # Axtarış sürətini qorumaq üçün limit
     for kod, melumat in it_bazasi.items():
         if axtaris in kod.lower() or axtaris in melumat['izah'].lower():
-            st.subheader(f"✅ Tapıldı: {kod}")
-            st.info(f"İzahı: {melumat['izah']}")
-            st.subheader("💡 Məsləhətlər:")
-            for m in melumat['meslehet']:
-                st.success(m)
+            
+            with st.container(border=True):
+                st.subheader(f"🔍 {kod}")
+                col1, col2 = st.columns([1, 2])
+                with col1:
+                    st.write("**İzah:**")
+                with col2:
+                    st.write(melumat['izah'])
+                
+                st.write("**💡 Məsləhətlər:**")
+                for m in melumat['meslehet']:
+                    st.markdown(f"- {m}")
+            
             tapildi = True
             count += 1
+        
         if count >= 10: 
-            st.warning("Çoxlu nəticə tapıldı, sistemin sürəti üçün ilk 10-u göstərilir...")
+            st.warning("Çoxlu nəticə tapıldı, ilk 10-u göstərilir...")
             break
     
     if not tapildi:
