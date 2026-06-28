@@ -1,193 +1,17 @@
 import streamlit as st
+import json
 
-# MƏLUMAT BAZASI: 240+ MADDƏ (Hamısı birlikdə)
-it_bazasi = {
-    # 1. WEB XƏTALARI
-    "400": {"izah": "Bad Request", "meslehet": ["URL-i yoxla", "Parametrləri düzəlt"]},
-    "401": {"izah": "Unauthorized", "meslehet": ["Giriş edin", "Token-i yoxla"]},
-    "403": {"izah": "Forbidden", "meslehet": ["İcazələri yoxla", "Adminlə əlaqə saxla"]},
-    "404": {"izah": "Not Found", "meslehet": ["URL-i yoxla", "Səhifə silinib"]},
-    "405": {"izah": "Method Not Allowed", "meslehet": ["GET/POST metodunu yoxla"]},
-    "408": {"izah": "Request Timeout", "meslehet": ["İnterneti yoxla"]},
-    "429": {"izah": "Too Many Requests", "meslehet": ["Limitləri yoxla"]},
-    "500": {"izah": "Internal Server Error", "meslehet": ["Loglara bax", "Serveri yenilə"]},
-    "502": {"izah": "Bad Gateway", "meslehet": ["Serveri restart et"]},
-    "503": {"izah": "Service Unavailable", "meslehet": ["Yüklənməni yoxla"]},
-    "504": {"izah": "Gateway Timeout", "meslehet": ["DNS-i yoxla"]},
-    
-    # 2. ŞƏBƏKƏ VƏ SİSTEM
-    "DNS": {"izah": "Ad həlli xətası", "meslehet": ["8.8.8.8-ə keç", "İnterneti yoxla"]},
-    "FTP": {"izah": "Fayl ötürmə xətası", "meslehet": ["Portu yoxla", "Passiv rejimə keç"]},
-    "RAM": {"izah": "Yaddaş çatışmazlığı", "meslehet": ["Proqramları bağla", "Restart et"]},
-    "CPU": {"izah": "Prosessor yüklənməsi", "meslehet": ["Task Manager-ə bax"]},
-    "HDD": {"izah": "Disk doludur", "meslehet": ["Faylları sil", "Diski təmizlə"]},
-    "BlueScreen": {"izah": "Sistem çökməsi", "meslehet": ["RAM-ı yoxla", "Driverləri yenilə"]},
-    "Ping": {"izah": "Bağlantı kəsilib", "meslehet": ["IP ünvanını yoxla"]},
-    "Firewall": {"izah": "Qoruma divarı", "meslehet": ["Portu açıq saxla"]},
-    "VPN": {"izah": "VPN bağlantısı uğursuz", "meslehet": ["Bağlantını sıfırla"]},
-    "Wi-Fi": {"izah": "Wi-Fi qoşulmur", "meslehet": ["Routeri söndürüb yandır"]},
-    
-    # 3. PROQRAMLAŞDIRMA
-    "SyntaxError": {"izah": "Yazılış qaydası səhvi", "meslehet": ["Mötərizəni yoxla", "İki nöqtə qoy"]},
-    "NameError": {"izah": "Dəyişən tapılmadı", "meslehet": ["Dəyişəni təyin et", "Adı düz yaz"]},
-    "TypeError": {"izah": "Tip uyğunsuzluğu", "meslehet": ["Tipə diqqət et", "Str/Int-i ayır"]},
-    "IndexError": {"izah": "Siyahı indeksi xətası", "meslehet": ["Ölçünü yoxla"]},
-    "KeyError": {"izah": "Lüğət açarı xətası", "meslehet": ["Açarın mövcudluğunu yoxla"]},
-    "IndentationError": {"izah": "Boşluq xətası", "meslehet": ["Tab-ı yoxla"]},
-    "SQL-1064": {"izah": "SQL Sintaksis xətası", "meslehet": ["Dırnaqları yoxla"]},
-    "ConnectionError": {"izah": "Baza qoşulma xətası", "meslehet": ["Host adını yoxla"]},
-    
-    # 4. KİBER TƏHLÜKƏSİZLİK
-    "Phishing": {"izah": "Fişinq hücumu", "meslehet": ["Linki açma", "Şifrəni dəyiş"]},
-    "DDoS": {"izah": "Həddən artıq sorğu", "meslehet": ["WAF-ı aktivləşdir"]},
-    "Ransomware": {"izah": "Fayllar şifrələnib", "meslehet": ["Antivirusla yoxla", "Back-up-dan bərpa et"]},
-    "BruteForce": {"izah": "Şifrənin sındırılması", "meslehet": ["İki faktorlu doğrulamanı aç"]},
-    "Malware": {"izah": "Zərərli proqram", "meslehet": ["Tam sistem skan et"]},
-    "ZeroDay": {"izah": "Naməlum boşluq", "meslehet": ["Patch-ləri yenilə"]},
-    "SQLi": {"izah": "SQL İnjektion hücumu", "meslehet": ["Sorğuları parametrli yaz"]},
-    "XSS": {"izah": "Cross-site scripting", "meslehet": ["Input-ları filtrlə"]},
-    "ManInTheMiddle": {"izah": "Ortadakı adam hücumu", "meslehet": ["VPN istifadə et"]},
-    "DataBreach": {"izah": "Məlumat sızması", "meslehet": ["Bütün şifrələri dəyiş"]},
+# JSON faylını oxuyur
+def bazani_yukle():
+    with open('it_bazasi.json', 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-    # 5-8. ƏLAVƏLƏR VƏ YENİ MADDƏLƏR
-    "Timeout": {"izah": "Əlaqə vaxtı bitdi", "meslehet": ["Server cavabını gözlə"]},
-    "Cache": {"izah": "Köhnə məlumatlar", "meslehet": ["Brauzer cache-ini təmizlə"]},
-    "SSL": {"izah": "Təhlükəsizlik sertifikat səhvi", "meslehet": ["Tarixi yoxla"]},
-    "AccessDenied": {"izah": "Giriş qadağandır", "meslehet": ["Admin hüququ ilə aç"]},
-    "Port 80": {"izah": "HTTP portu məşğuldur", "meslehet": ["Servisi dayandır"]},
-    "Port 3306": {"izah": "MySQL portu bağlıdır", "meslehet": ["Bazanı başlat"]},
-    "KernelPanic": {"izah": "Linux sistem çökməsi", "meslehet": ["Logları oxu"]},
-    "Deadlock": {"izah": "Baza kilidlənməsi", "meslehet": ["Tranzaksiyaları yoxla"]},
-    "OutOfMemory": {"izah": "Proqram yaddaşı bitdi", "meslehet": ["Heap size-ı artır"]},
-    "StackOverflow": {"izah": "Rekursiv funksiya xətası", "meslehet": ["Döngünü dayandır"]},
-    "BadSector": {"izah": "Hard diskdə fiziki xəta", "meslehet": ["Diski dəyiş", "Backup al"]},
-    "Latency": {"izah": "Şəbəkə gecikməsi", "meslehet": ["Ping-i yoxla", "Kabeli dəyiş"]},
-    "PacketLoss": {"izah": "Paket itkisi", "meslehet": ["Routeri yoxla"]},
-    "SMTP": {"izah": "E-mail göndərmə xətası", "meslehet": ["SMTP portunu yoxla"]},
-    "SSH": {"izah": "Uzaqdan idarə xətası", "meslehet": ["SSH açarlarını yoxla"]},
-    "BufferOverflow": {"izah": "Bufer daşması", "meslehet": ["Input uzunluğunu məhdudlaşdır"]},
-    "SegmentFault": {"izah": "Yaddaşa icazəsiz giriş", "meslehet": ["Pointer-ləri yoxla"]},
-    "RuntimeError": {"izah": "İş vaxtı xətası", "meslehet": ["Loglara bax", "Kodun məntiqini yoxla"]},
-    "409": {"izah": "Conflict (Konflikt)", "meslehet": ["Mənbəni yenilə"]},
-    "DiskFull": {"izah": "Serverin diski doludur", "meslehet": ["Logları sil", "Diski təmizlə"]},
-    "418": {"izah": "I'm a teapot", "meslehet": ["Bu bir zarafat kodudur, ciddi deyil"]},
-    "422": {"izah": "Unprocessable Entity", "meslehet": ["JSON formatını yoxla"]},
-    "508": {"izah": "Loop Detected", "meslehet": ["Yönləndirmə döngüsünü düzəlt"]},
-    "InvalidToken": {"izah": "Token yararsızdır", "meslehet": ["Yenidən giriş edin"]},
-    "SessionExpired": {"izah": "Sessiya müddəti bitdi", "meslehet": ["Səhifəni yenilə"]},
-    "HardwareFailure": {"izah": "Avadanlıq nasazlığı", "meslehet": ["Servisə müraciət et"]},
-    "Overheating": {"izah": "Həddən artıq qızma", "meslehet": ["Ventilyatoru yoxla"]},
-    "BIOS-Error": {"izah": "BIOS/UEFI xətası", "meslehet": ["Batareyanı yoxla"]},
-    "AP-Isolation": {"izah": "Wi-Fi cihazları bir-birini görmür", "meslehet": ["Router ayarını dəyiş"]},
-    "BandwidthLimit": {"izah": "İnternet limiti aşıldı", "meslehet": ["Provayderlə əlaqə saxla"]},
-    "DatabaseLocked": {"izah": "Baza kilidli", "meslehet": ["Prosesləri öldür"]},
-    "FileCorrupted": {"izah": "Fayl xarab olub", "meslehet": ["Faylı yenidən yüklə"]},
-    "MissingDLL": {"izah": "Kitabxana faylı çatışmır", "meslehet": ["Driveri yenilə"]},
-    "DiskWriteError": {"izah": "Diskə yazmaq olmur", "meslehet": ["İcazələri yoxla"]},
-    "NoRouteToHost": {"izah": "Host tapılmadı", "meslehet": ["İnterneti yoxla"]},
-    "ConnectionRefused": {"izah": "Qoşulma rədd edildi", "meslehet": ["Portu yoxla"]},
-    "RegistryLocked": {"izah": "Registry kilidli", "meslehet": ["Admin kimi aç"]},
-    "ServiceTimeout": {"izah": "Servis gecikir", "meslehet": ["Serveri restart et"]},
-    "SSLHandshake": {"izah": "SSL əlaqə qurulmadı", "meslehet": ["Sertifikatı yoxla"]},
-    "PermissionDenied": {"izah": "İcazə yoxdur", "meslehet": ["Sudo/Admin hüququnu yoxla"]},
-    "406": {"izah": "Not Acceptable", "meslehet": ["Header məlumatını yoxla"]},
-    "407": {"izah": "Proxy Authentication Required", "meslehet": ["Proxy şifrəsini daxil et"]},
-    "410": {"izah": "Gone", "meslehet": ["Resurs birdəfəlik silinib"]},
-    "411": {"izah": "Length Required", "meslehet": ["Content-Length əlavə et"]},
-    "413": {"izah": "Payload Too Large", "meslehet": ["Fayl ölçüsünü kiçilt"]},
-    "414": {"izah": "URI Too Long", "meslehet": ["URL-i qısalt"]},
-    "415": {"izah": "Unsupported Media Type", "meslehet": ["Fayl formatını yoxla"]},
-    "501": {"izah": "Not Implemented", "meslehet": ["Server metodu dəstəkləmir"]},
-    "505": {"izah": "HTTP Version Not Supported", "meslehet": ["Protokolu yoxla"]},
-    "507": {"izah": "Insufficient Storage", "meslehet": ["Serverdə yer boşalt"]},
-    "511": {"izah": "Network Authentication Required", "meslehet": ["Wi-Fi girişini təsdiqlə"]},
-    "Cloudflare-520": {"izah": "Web server boş cavab verdi", "meslehet": ["Server loglarına bax"]},
-    "Cloudflare-521": {"izah": "Server əlaqəni rədd etdi", "meslehet": ["Firewall-ı yoxla"]},
-    "Cloudflare-522": {"izah": "Connection Timed Out", "meslehet": ["Serveri yoxla"]},
-    "Cloudflare-523": {"izah": "Origin is Unreachable", "meslehet": ["DNS-i yoxla"]},
-    "Cloudflare-524": {"izah": "A Timeout Occurred", "meslehet": ["Sorğunun müddətinə bax"]},
-    "Docker-Pull-Error": {"izah": "İmage yüklənmədi", "meslehet": ["Docker login et"]},
-    "Git-Merge-Conflict": {"izah": "Fayllar toqquşdu", "meslehet": ["Kodları manuel birləşdir"]},
-    "Jenkins-Build-Fail": {"izah": "Build uğursuz oldu", "meslehet": ["Pipeline koduna bax"]},
-    "K8s-CrashLoop": {"izah": "Pod daim yenilənir", "meslehet": ["Pod loglarını yoxla"]},
-    "CPU-Throttling": {"izah": "Prosessorun sürətinin aşağı düşməsi", "meslehet": ["İstiliyi yoxla", "Güc planını dəyiş"]},
-    "MemoryLeak": {"izah": "Yaddaş sızması", "meslehet": ["Prosesləri analiz et", "Kodda resursları azad et"]},
-    "ZombieProcess": {"izah": "Ölü prosesin RAM-da qalması", "meslehet": ["Kill komandası ilə prosesi bağla"]},
-    "Disk-I/O-Wait": {"izah": "Disk oxuma/yazma gözləməsi", "meslehet": ["SSD-nin sağlamlığını yoxla"]},
-    "Database-Timeout": {"izah": "Baza sorğusu vaxtı bitdi", "meslehet": ["İndeksləri optimallaşdır"]},
-    "API-Rate-Limit": {"izah": "API limiti aşıldı", "meslehet": ["Tokeni yenilə", "Gözləmə müddətini artır"]},
-    "DNS-Spoofing": {"izah": "DNS kəşinin zəhərlənməsi", "meslehet": ["Kəşi təmizlə", "Təhlükəsiz DNS istifadə et"]},
-    "Certificate-Expired": {"izah": "SSL sertifikatının müddəti bitib", "meslehet": ["Sertifikatı yenilə"]},
-    "High-Ping": {"izah": "Yüksək gecikmə", "meslehet": ["Arxa planda yükləmələri dayandır"]},
-    "Port-Conflict": {"izah": "Portda başqa bir servis işləyir", "meslehet": ["Servisi dayandır", "Portu dəyiş"]},
-    "Service-Dependency-Error": {"izah": "Servisin asılı olduğu digər servis işləmir", "meslehet": ["Dependency-ləri yoxla"]},
-    "Unauthorized-Access-Attempt": {"izah": "İcazəsiz giriş cəhdi", "meslehet": ["Şifrəni dəyiş", "İP-ni blokla"]},
-    "Browser-Incompatibility": {"izah": "Brauzer uyğunsuzluğu", "meslehet": ["Brauzeri yenilə", "Başqa brauzerdə yoxla"]},
-    "Cache-Inconsistency": {"izah": "Kəşdəki məlumatların düzgün olmaması", "meslehet": ["Kəşi təmizlə (Purge Cache)"]},
-    "App-Crash": {"izah": "Tətbiqin gözlənilmədən bağlanması", "meslehet": ["Log fayllarını yoxla"]},
-    "Configuration-Error": {"izah": "Konfiqurasiya səhvi", "meslehet": ["Config faylını yoxla"]},
-    "Resource-Exhaustion": {"izah": "Resursların (CPU/RAM) bitməsi", "meslehet": ["Server resurslarını artır"]},
-    "Network-Interface-Down": {"izah": "Şəbəkə kartı aktiv deyil", "meslehet": ["Interface-i restart et"]},
-    "Invalid-JSON-Format": {"izah": "JSON formatı səhvdir", "meslehet": ["JSON validator istifadə et"]},
-    "Unauthorized-Token-Usage": {"izah": "Tokenin icazəsiz istifadəsi", "meslehet": ["Tokeni ləğv et və yenisini yarat"]},
-    
-    # 9. ƏLAVƏ 50 MADDƏ (Cloud & DevOps)
-    "AWS-S3-403": {"izah": "S3 bucket-ə giriş qadağandır", "meslehet": ["Bucket policy-ni yoxla"]},
-    "AWS-EC2-Timeout": {"izah": "EC2 instance-a qoşulmaq olmur", "meslehet": ["Security group-u yoxla"]},
-    "Azure-Auth-Fail": {"izah": "Azure autentifikasiya xətası", "meslehet": ["Tenant ID-ni yoxla"]},
-    "GCP-Quota-Exceeded": {"izah": "GCP kvota limiti dolub", "meslehet": ["Limit artırılması üçün müraciət et"]},
-    "Terraform-Lock": {"izah": "Terraform state faylı kilidlənib", "meslehet": ["State faylını unlock et"]},
-    "K8s-ImagePullBackOff": {"izah": "Docker image yüklənmədi", "meslehet": ["Registry-ə girişi yoxla"]},
-    "K8s-OOMKilled": {"izah": "Container yaddaşı aşdı", "meslehet": ["Limitləri artır"]},
-    "Helm-Release-Exists": {"izah": "Helm release artıq mövcuddur", "meslehet": ["Adı dəyiş və ya sil"]},
-    "Ansible-SSH-Fail": {"izah": "Ansible node-a qoşula bilmir", "meslehet": ["SSH açarlarını yoxla"]},
-    "CI-CD-Pipeline-Fail": {"izah": "Pipeline uğursuz oldu", "meslehet": ["Build loglarını oxu"]},
-    "Webhook-Timeout": {"izah": "Webhook cavab vermədi", "meslehet": ["Endpoint-i yoxla"]},
-    "API-Gateway-502": {"izah": "API gateway-dən səhv cavab", "meslehet": ["Backend-i yoxla"]},
-    "DB-Replication-Lag": {"izah": "Baza replikasiya gecikməsi", "meslehet": ["Network-ü yoxla"]},
-    "ElasticSearch-Red": {"izah": "ES klasteri qırmızı statusdadır", "meslehet": ["Node-ları yoxla"]},
-    "Redis-Connection-Fail": {"izah": "Redis-ə qoşulma uğursuzdur", "meslehet": ["Portu və şifrəni yoxla"]},
-    "Kafka-Consumer-Group-Lag": {"izah": "Kafka mesaj gecikməsi", "meslehet": ["Consumer sayını artır"]},
-    "RabbitMQ-Queue-Full": {"izah": "RabbitMQ növbəsi doludur", "meslehet": ["Consumer-ləri yoxla"]},
-    "Grafana-Data-Source-Error": {"izah": "Grafana məlumatı çəkə bilmir", "meslehet": ["API açarını yenilə"]},
-    "Prometheus-Target-Down": {"izah": "Prometheus hədəfi görmür", "meslehet": ["Exporter-i yoxla"]},
-    "Nginx-502-Bad-Gateway": {"izah": "Nginx backend-ə çatmadı", "meslehet": ["Upstream-i yoxla"]},
-    "Apache-403": {"izah": "Apache-də fayl icazəsi xətası", "meslehet": ["Chmod-u yoxla"]},
-    "PHP-Fatal-Error": {"izah": "PHP kritik səhv", "meslehet": ["PHP loglarını yoxla"]},
-    "Python-Pip-Install-Fail": {"izah": "Kitabxana yüklənmədi", "meslehet": ["Pip-i yenilə"]},
-    "Node-npm-install-error": {"izah": "Node paketləri yüklənmədi", "meslehet": ["Node versiyasını yoxla"]},
-    "React-Build-Error": {"izah": "React proqramı build olmadı", "meslehet": ["Node_modules-u sil və yenidən qur"]},
-    "SQL-Connection-Refused": {"izah": "Baza qoşulması rədd edildi", "meslehet": ["Firewall-ı yoxla"]},
-    "No-Space-Left-On-Device": {"izah": "Serverdə yer qurtardı", "meslehet": ["Logları sil"]},
-    "File-Permission-Denied": {"izah": "Fayla yazmaq olmur", "meslehet": ["Chown/Chmod-u dəyiş"]},
-    "SSH-Connection-Timeout": {"izah": "SSH vaxtı bitdi", "meslehet": ["IP-ni yoxla"]},
-    "RDP-Disconnected": {"izah": "Remote Desktop qırıldı", "meslehet": ["Network-ü yoxla"]},
-    "VNC-Connection-Refused": {"izah": "VNC qoşulmadı", "meslehet": ["VNC portunu yoxla"]},
-    "VPN-Auth-Fail": {"izah": "VPN şifrə səhvi", "meslehet": ["Sertifikatı yoxla"]},
-    "ICMP-Block": {"izah": "Ping bloklanıb", "meslehet": ["Firewall ayarlarını yoxla"]},
-    "ARP-Spoofing": {"izah": "ARP hücumu aşkarlanıb", "meslehet": ["Switch-i yoxla"]},
-    "DHCP-Fail": {"izah": "İP almaq mümkün olmadı", "meslehet": ["DHCP serveri yoxla"]},
-    "DNS-Resolution-Fail": {"izah": "Domain adı həll olunmadı", "meslehet": ["DNS-i dəyiş"]},
-    "NTP-Sync-Error": {"izah": "Saat sinxronizasiya olunmur", "meslehet": ["Time serveri yoxla"]},
-    "SMB-Access-Error": {"izah": "Paylaşılan qovluğa giriş yoxdur", "meslehet": ["İcazəni yoxla"]},
-    "NFS-Mount-Fail": {"izah": "NFS mount olunmadı", "meslehet": ["Export-u yoxla"]},
-    "Systemd-Service-Fail": {"izah": "Service işləmir", "meslehet": ["Journalctl-ə bax"]},
-    "Grub-Boot-Error": {"izah": "Bootloader xətası", "meslehet": ["Grub-u bərpa et"]},
-    "Kernel-Oops": {"izah": "Kernel səhvi", "meslehet": ["Hardware-i yoxla"]},
-    "Swap-Full": {"izah": "Swap yaddaşı doludur", "meslehet": ["Process-ləri öldür"]},
-    "CPU-Overheating": {"izah": "Prosessor çox qızıb", "meslehet": ["Soyutmanı yoxla"]},
-    "RAM-ECC-Error": {"izah": "RAM-da fiziki xəta", "meslehet": ["RAM-ı dəyiş"]},
-    "Disk-Write-Protected": {"izah": "Disk yazmaya qapalıdır", "meslehet": ["Fiziki açarı yoxla"]},
-    "GPU-Driver-Crash": {"izah": "Video kart xətası", "meslehet": ["Driveri yenilə"]},
-    "Power-Supply-Failure": {"izah": "Qida bloku problemi", "meslehet": ["Servisə ver"]},
-    "Bios-Battery-Low": {"izah": "Bios batareyası bitib", "meslehet": ["Batareyanı dəyiş"]},
-    "Monitor-No-Signal": {"izah": "Ekrana görüntü gəlmir", "meslehet": ["Kabeli yoxla"]}
-}
+it_bazasi = bazani_yukle()
 
 st.set_page_config(page_title="Professional IT Bilik Bazası", page_icon="💻")
-st.title("💻 Professional IT Bilik Bazası (240+)")
+st.title("💻 Professional IT Bilik Bazası (Limitsiz)")
 
-axtaris = st.text_input("Axtarış üçün xəta kodu və ya açar söz yazın:").strip().lower()
+axtaris = st.text_input("Axtarış üçün xəta kodu yazın:").strip().lower()
 
 if axtaris:
     tapildi = False
@@ -199,10 +23,8 @@ if axtaris:
             for m in melumat['meslehet']:
                 st.success(m)
             tapildi = True
-    
     if not tapildi:
         st.error("Bu məlumat hələlik bazada yoxdur.")
 
-st.write("---")
-with st.expander("📂 Bütün xəta kodlarının siyahısı:"):
+with st.expander("📂 Bütün xəta kodları:"):
     st.write(list(it_bazasi.keys()))
