@@ -171,3 +171,18 @@ if axtaris:
 st.write("---")
 with st.expander("📂 Bütün xəta kodlarının siyahısı (ümumi sayı):"):
     st.write(f"Baza hal-hazırda {len(it_bazasi)} maddədən ibarətdir.")
+import streamlit as st
+
+# CSS-i gizlədən kod
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            [data-testid="stDecoration"] {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
+# MƏLUMAT BAZASI: İLKİN 350+ MADDƏ
+it_bazasi = { ... } # Kodunuzun qalan hissəsi olduğu kimi qalır
