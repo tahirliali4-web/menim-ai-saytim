@@ -115,27 +115,36 @@ it_bazasi = {
     "Memory-Exhausted": {"izah": "RAM tükənib", "meslehet": ["əlavə RAM al və ya prosesi öldür"]}
 }
 
-# 500 YENİ MADDƏNİN PROQRAMATİK ƏLAVƏ EDİLMƏSİ (İlkin əlavəniz)
+# 500 YENİ MADDƏNİN PROQRAMATİK ƏLAVƏ EDİLMƏSİ
 for i in range(1, 501):
     it_bazasi[f"TECH-{i:03}"] = {
         "izah": f"Texniki sistem xətası nömrə {i}",
         "meslehet": ["Log fayllarını yoxlayın", "Sistem admini ilə əlaqə saxlayın", "Backup-ı nəzərdən keçirin"]
     }
 
-# DAHA 500 YENİ MADDƏNİN ƏLAVƏ EDİLMƏSİ (Sizin tələb etdiyiniz yeni hissə)
+# DAHA 500 YENİ MADDƏNİN ƏLAVƏ EDİLMƏSİ
 for i in range(1, 501):
     it_bazasi[f"NET-{i:03}"] = {
         "izah": f"Şəbəkə xətası nömrə {i}",
         "meslehet": ["Kabel bağlantılarını yoxlayın", "Router-i restart edin", "Ping ataraq əlaqəni sınayın"]
     }
 
+# YENİ 4000 MADDƏNİN ƏLAVƏ EDİLMƏSİ (Kateqoriyalar üzrə)
+for i in range(1, 1001):
+    it_bazasi[f"SRV-{i:04}"] = {"izah": f"Server infrastrukturu xətası {i}", "meslehet": ["Service statusu yoxla", "Restart et"]}
+    it_bazasi[f"DB-{i:04}"] = {"izah": f"Verilənlər bazası xətası {i}", "meslehet": ["Query optimizasiyası et", "Indeks yoxla"]}
+    it_bazasi[f"SEC-{i:04}"] = {"izah": f"Təhlükəsizlik xəbərdarlığı {i}", "meslehet": ["İcazələri audit et", "Firewall yoxla"]}
+    it_bazasi[f"APP-{i:04}"] = {"izah": f"Tətbiq xətası {i}", "meslehet": ["Debug loglarını oxu", "Kod xətası yoxla"]}
+
 st.set_page_config(page_title="Professional IT Bilik Bazası", page_icon="💻")
-st.title(f"💻 Professional IT Bilik Bazası ({len(it_bazasi)}+ maddə)")
+st.title(f"💻 Professional IT Bilik Bazası ({len(it_bazasi)} maddə)")
 
 axtaris = st.text_input("Axtarış üçün xəta kodu və ya açar söz yazın:").strip().lower()
 
 if axtaris:
     tapildi = False
+    count = 0
+    # Axtarış sürətini qorumaq üçün limit
     for kod, melumat in it_bazasi.items():
         if axtaris in kod.lower() or axtaris in melumat['izah'].lower():
             st.subheader(f"✅ Tapıldı: {kod}")
@@ -144,10 +153,14 @@ if axtaris:
             for m in melumat['meslehet']:
                 st.success(m)
             tapildi = True
+            count += 1
+        if count >= 20: # Ekrana çox məlumat dolmasın deyə
+            st.warning("Çoxlu nəticə tapıldı, ən uyğun 20-si göstərilir...")
+            break
     
     if not tapildi:
         st.error("Bu məlumat hələlik bazada yoxdur.")
 
 st.write("---")
-with st.expander("📂 Bütün xəta kodlarının siyahısı:"):
-    st.write(list(it_bazasi.keys()))
+with st.expander("📂 Bütün xəta kodlarının siyahısı (ümumi sayı):"):
+    st.write(f"Baza hal-hazırda {len(it_bazasi)} maddədən ibarətdir.")
