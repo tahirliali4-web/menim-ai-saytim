@@ -1,5 +1,12 @@
 {
-    "404": {"izah": "Not Found", "meslehet": ["URL-i yoxla", "Səhifə silinib"]},
-    "FTP": {"izah": "Fayl ötürmə xətası", "meslehet": ["Portu yoxla", "Passiv rejimə keç"]},
-    "DNS": {"izah": "Ad həlli xətası", "meslehet": ["8.8.8.8-ə keç", "İnterneti yoxla"]}
+    "400": {"izah": "Bad Request", "meslehet": ["URL-i yoxla", "Parametrləri düzəlt"]},
+    "401": {"izah": "Unauthorized", "meslehet": ["Giriş edin", "Token-i yoxla"]},
+    "403": {"izah": "Forbidden", "meslehet": ["İcazələri yoxla", "Adminlə əlaqə saxla"]},
+    "500": {"izah": "Internal Server Error", "meslehet": ["Loglara bax", "Serveri yenilə"]},
+    "DNS": {"izah": "Ad həlli xətası", "meslehet": ["8.8.8.8-ə keç", "İnterneti yoxla"]},
+    "RAM": {"izah": "Yaddaş çatışmazlığı", "meslehet": ["Proqramları bağla", "Restart et"]},
+    "CPU-Overheating": {"izah": "Prosessor çox qızıb", "meslehet": ["Soyutmanı yoxla"]},
+    "K8s-CrashLoop": {"izah": "Pod daim yenilənir", "meslehet": ["Pod loglarını yoxla"]},
+    "SQLi": {"izah": "SQL İnjektion hücumu", "meslehet": ["Sorğuları parametrli yaz"]}
+    // Bura bütün digər 240+ maddəni əlavə edə bilərsən
 }
