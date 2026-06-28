@@ -171,18 +171,3 @@ if axtaris:
 st.write("---")
 with st.expander("📂 Bütün xəta kodlarının siyahısı (ümumi sayı):"):
     st.write(f"Baza hal-hazırda {len(it_bazasi)} maddədən ibarətdir.")
-import streamlit as st
-
-# Yeni, daha güclü CSS kodu
-hide_streamlit_style = """
-            <style>
-            #MainMenu {visibility: hidden !important;}
-            footer {visibility: hidden !important;}
-            header {visibility: hidden !important;}
-            .stDeployButton {display:none !important;}
-            [data-testid="stDecoration"] {visibility: hidden !important;}
-            [data-testid="stStatusWidget"] {visibility: hidden !important;}
-            #stAppViewContainer footer {visibility: hidden !important;}
-            </style>
-            """
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
